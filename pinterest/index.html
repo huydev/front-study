@@ -7,7 +7,6 @@
 *{margin:0;padding:0;}
 #pin-box{
     position: relative;
-    overflow: hidden;
 }
 #pin-box .item{
     float: left;
@@ -36,11 +35,100 @@
         <a class="item" href="#"><img src="img/8.jpg" alt=""></a>
         <a class="item" href="#"><img src="img/9.jpg" alt=""></a>
         <a class="item" href="#"><img src="img/10.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/1.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/2.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/3.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/4.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/5.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/6.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/7.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/8.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/9.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/10.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/1.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/2.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/3.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/4.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/5.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/6.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/7.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/8.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/9.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/10.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/1.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/2.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/3.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/4.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/5.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/6.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/7.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/8.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/9.jpg" alt=""></a>
+        <a class="item" href="#"><img src="img/10.jpg" alt=""></a>
     </div>
 </div>
 <script>
 window.onload = function(){
+    var oBox = document.getElementById('pin-box');
+    var aItem = getByClass(oBox, 'item');
 
+    var itemWidth = aItem[0].offsetWidth;
+
+    //浏览器视口宽高
+    var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var num = Math.floor(w / itemWidth);
+    var tmpW = num * (itemWidth+10) + 'px';
+    oBox.style.cssText += ";width:" + tmpW + ";margin:0 auto;";
+
+    var colHeights = [];
+    for(var i=0, len=aItem.length; i<len; i++){
+        if(i<num){
+            colHeights.push(aItem[i].offsetHeight + 10);
+        }else{
+            var mHeight = Math.min.apply({}, colHeights);
+            var mIndex = getMinIndex(colHeights, mHeight);
+
+            aItem[i].style.cssText = 'position:absolute;left:' + (aItem[mIndex].offsetLeft - 5) + 'px;top:' + mHeight + 'px;';
+            aItem[i].setAttribute('data-mheight', mHeight);
+            colHeights[mIndex] += (aItem[num].offsetHeight + 10);
+        }
+    }
+
+    /*var mHeight = Math.min.apply({}, colHeights);
+    var mIndex = getMinIndex(colHeights, mHeight);
+
+
+    aItem[num].style.cssText = 'position:absolute;left:' + (aItem[mIndex].offsetLeft - 5) + 'px;top:' + mHeight + 'px;';
+    colHeights[mIndex] += aItem[num].offsetHeight + 10;*/
+
+    //console.log(mHeight + "," + mIndex);
+
+}
+function loadImg(items, target){
+    target.appendChild(items);
+}
+
+function getMinIndex(arr, minHeight){
+    for(index in arr){
+        if(arr[index] == minHeight)
+            return index;
+    }
+}
+function getByClass(parent, className){
+    var arr = [];
+    var p = parent || document;
+    var aElem = p.getElementsByTagName('*');
+    for(var i=0, len=aElem.length; i<len; i++){
+        if(hasClass(aElem[i], className)){
+            arr.push(aElem[i]);
+        }
+    }
+    return arr;
+}
+function hasClass(elem, className){
+    var patt = new RegExp('\\s+' + className + '|' + className + '\\s+' + '|' + className);
+    return patt.test(elem.className);
 }
 
 </script>
