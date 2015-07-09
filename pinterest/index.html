@@ -18,7 +18,7 @@
     padding: 9px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 6px #ddd;
+    /*box-shadow: 0 0 6px #ddd;*/
 }
 </style>
 </head>
@@ -90,8 +90,7 @@ window.onload = function(){
             var mIndex = getMinIndex(colHeights, mHeight);
 
             aItem[i].style.cssText = 'position:absolute;left:' + (aItem[mIndex].offsetLeft - 5) + 'px;top:' + mHeight + 'px;';
-            aItem[i].setAttribute('data-mheight', mHeight);
-            colHeights[mIndex] += (aItem[num].offsetHeight + 10);
+            colHeights[mIndex] += (aItem[i].offsetHeight + 10);
         }
     }
 
@@ -103,8 +102,30 @@ window.onload = function(){
     colHeights[mIndex] += aItem[num].offsetHeight + 10;*/
 
     //console.log(mHeight + "," + mIndex);
+    window.onscroll = function(){
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        var tHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+        if(tHeight <= h + scrollTop){
+            console.log('滚动条到达底部');
+            var oA = document.createElement('a');
+            var oImg = document.createElement('img');
+            oA.className = 'item';
+            oA.href = 'http://baidu.com';
+            oImg.src="img/10.jpg";
+            oA.appendChild(oImg);
 
+            var newMinH = Math.min.apply({}, colHeights);
+            var newMinI = getMinIndex(colHeights, newMinH);
+
+            oA.style.cssText = 'position:absolute;left:' + (aItem[newMinI].offsetLeft - 5) + 'px;top:' + newMinH + 'px;';
+
+            oBox.appendChild(oA);
+            colHeights[newMinI] += (oA.offsetHeight + 10);
+        }
+    }
 }
+
+
 function loadImg(items, target){
     target.appendChild(items);
 }
