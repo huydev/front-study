@@ -70,40 +70,11 @@
 <script>
 window.onload = function(){
     var oBox = document.getElementById('pin-box');
-    var aItem = getByClass(oBox, 'item');
+    initGallery(oBox, 'item');
 
-    var itemWidth = aItem[0].offsetWidth;
-
-    //浏览器视口宽高
-    var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-    var num = Math.floor(w / itemWidth);
-    var tmpW = num * (itemWidth+10) + 'px';
-    oBox.style.cssText += ";width:" + tmpW + ";margin:0 auto;";
-
-    var colHeights = [];
-    for(var i=0, len=aItem.length; i<len; i++){
-        if(i<num){
-            colHeights.push(aItem[i].offsetHeight + 10);
-        }else{
-            var mHeight = Math.min.apply({}, colHeights);
-            var mIndex = getMinIndex(colHeights, mHeight);
-
-            aItem[i].style.cssText = 'position:absolute;left:' + (aItem[mIndex].offsetLeft - 5) + 'px;top:' + mHeight + 'px;';
-            colHeights[mIndex] += (aItem[i].offsetHeight + 10);
-        }
-    }
-
-    /*var mHeight = Math.min.apply({}, colHeights);
-    var mIndex = getMinIndex(colHeights, mHeight);
-
-
-    aItem[num].style.cssText = 'position:absolute;left:' + (aItem[mIndex].offsetLeft - 5) + 'px;top:' + mHeight + 'px;';
-    colHeights[mIndex] += aItem[num].offsetHeight + 10;*/
-
-    //console.log(mHeight + "," + mIndex);
     window.onscroll = function(){
-        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        scrollLoad(oBox, 'item');
+        /*var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
         var tHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
         if(tHeight <= h + scrollTop){
             console.log('滚动条到达底部');
@@ -121,14 +92,74 @@ window.onload = function(){
 
             oBox.appendChild(oA);
             colHeights[newMinI] += (oA.offsetHeight + 10);
+        }*/
+    }
+}
+
+function scrollLoad(parent, className){
+    var aItems = getByClass(parent, className);
+    var len = aItems.length;
+    var h = aItems[len-1].offsetTop + Math.floor(aItems[len-1].offsetHeight / 2);   //加载的临界条件
+    var clientH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+
+    /*
+    ** 模拟数据
+    **
+    */
+    var data = [
+        {"src":"img/1.jpg"},
+        {"src":"img/2.jpg"},
+        {"src":"img/3.jpg"},
+        {"src":"img/4.jpg"},
+        {"src":"img/5.jpg"},
+        {"src":"img/6.jpg"},
+        {"src":"img/7.jpg"},
+        {"src":"img/8.jpg"},
+        {"src":"img/9.jpg"},
+        {"src":"img/10.jpg"}
+    ];
+
+    if(h < clientH + scrollTop){
+        for(var i=0, len=data.length; i<len; i++){
+            var oA = document.createElement('a');
+            oA.className = 'item';
+            oA.target = '_blank';
+            oA.href = data[i].href || 'http://huydev.com';
+
+            var oImg = document.createElement('img');
+            oImg.src = data[i].src;
+
+            oA.appendChild(oImg);
+            parent.appendChild(oA);
+            initGallery(parent, 'item');
+        }
+    }
+
+}
+
+function initGallery(parent, className){
+    var aItems = getByClass(parent, className);
+    var itemWidth = aItems[0].offsetWidth;
+    var w = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var num = Math.floor(w / itemWidth);
+    var tmpW = num * (itemWidth + 10) + 'px';   // 10为margin值
+    parent.style.cssText += ";width:" + tmpW + ";margin: 0 auto;";
+
+    var colHeights = [];
+    for(var i=0, len=aItems.length; i<len; i++){
+        if(i < num){
+            colHeights.push(aItems[i].offsetHeight + 10);
+        }else{
+            var mHeight = Math.min.apply({}, colHeights);
+            var mIndex = getMinIndex(colHeights, mHeight);
+
+            aItems[i].style.cssText = 'position:absolute;left:' + ((itemWidth+10) * mIndex) + 'px;top:' + mHeight + 'px;';
+            colHeights[mIndex] += (aItems[i].offsetHeight + 10);
         }
     }
 }
 
-
-function loadImg(items, target){
-    target.appendChild(items);
-}
 
 function getMinIndex(arr, minHeight){
     for(index in arr){
@@ -148,8 +179,12 @@ function getByClass(parent, className){
     return arr;
 }
 function hasClass(elem, className){
-    var patt = new RegExp('\\s+' + className + '|' + className + '\\s+' + '|' + className);
-    return patt.test(elem.className);
+    var names = elem.className.split(/\s+/);
+    for(var i in names){
+        if(names[i] == className)
+            return true;
+    }
+    return false;
 }
 
 </script>
