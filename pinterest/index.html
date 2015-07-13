@@ -68,14 +68,14 @@
     </div>
 </div>
 <script>
-var flag = false;   //不加载
+var flag = true;   //是否加载完成
 window.onload = function(){
     var oBox = document.getElementById('pin-box');
     initGallery(oBox, 'item');
 
     window.onscroll = function(){
         console.log(flag);
-        if(flag == false){
+        if(flag == true){
             scrollLoad(oBox, 'item');
         }
     }
@@ -88,25 +88,8 @@ function scrollLoad(parent, className){
     var clientH = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
 
-    /*
-    ** 模拟数据
-    **
-    */
-    /*var data = [
-        {"src":"img/1.jpg"},
-        {"src":"img/2.jpg"},
-        {"src":"img/3.jpg"},
-        {"src":"img/4.jpg"},
-        {"src":"img/5.jpg"},
-        {"src":"img/6.jpg"},
-        {"src":"img/7.jpg"},
-        {"src":"img/8.jpg"},
-        {"src":"img/9.jpg"},
-        {"src":"img/10.jpg"}
-    ];*/
-    
-
     if(h < clientH + scrollTop){
+        flag = false;
         var num = 0;
         ajax({
             type: "get",
@@ -123,9 +106,8 @@ function scrollLoad(parent, className){
                     var oImg = document.createElement('img');
                     oImg.onload = function(){
                         num++;
-                        if(num == len){
+                        if(num == len){ //图片加载完成后，重新布局
                             initGallery(parent, 'item');
-                        }else{
                             flag = true;
                         }
                     }
@@ -133,31 +115,10 @@ function scrollLoad(parent, className){
 
                     oA.appendChild(oImg);
                     parent.appendChild(oA);
-                    /*if(num >= len){
-                        console.log('num'+num);
-                        console.log('len'+len);
-                        initGallery(parent, 'item');
-                    }else{
-                        console.log('smg');
-                    }*/
 
                 }
             }
         });
-
-        /*for(var i=0, len=data.length; i<len; i++){
-            var oA = document.createElement('a');
-            oA.className = 'item';
-            oA.target = '_blank';
-            oA.href = data[i].href || 'http://huydev.com';
-
-            var oImg = document.createElement('img');
-            oImg.src = data[i].src;
-
-            oA.appendChild(oImg);
-            parent.appendChild(oA);
-            initGallery(parent, 'item');
-        }*/
     }
 
 }
