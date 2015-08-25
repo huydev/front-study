@@ -97,6 +97,26 @@ function scrollLoad(parent, className){
             dataType: "json",
             success: function(data){
                 var pics = data.pic;
+                var aFrag = document.createDocumentFragment();
+
+                //aItems[i].style.cssText = 'position:absolute;left:' + ((itemWidth+10) * mIndex) + 'px;top:' + mHeight + 'px;';
+
+                var oTmpA = document.createElement('a');
+                oTmpA.className = 'item';
+                oTmpA.target = '_blank';
+                oTmpA.href = 'javascript:;';
+                oTmpA.id = 'loading';
+                oTmpA.style.width = '100%';
+                oTmpA.innerHTML = '加载中……'
+
+                var tlen = aItems.length;
+                var appendH = aItems[tlen-1].offsetTop + Math.ceil(aItems[tlen-1].offsetHeight);
+                oTmpA.style.position = 'absolute';
+                oTmpA.style.left = 0;
+                oTmpA.style.top = appendH + 10 + 'px';
+
+                parent.appendChild(oTmpA);
+
                 for(var i=0, len=pics.length; i<len; i++){
                     var oA = document.createElement('a');
                     oA.className = 'item';
@@ -107,6 +127,8 @@ function scrollLoad(parent, className){
                     oImg.onload = function(){
                         num++;
                         if(num == len){ //图片加载完成后，重新布局
+                            parent.removeChild(oTmpA);
+                            parent.appendChild(aFrag);
                             initGallery(parent, 'item');
                             flag = true;
                         }
@@ -114,8 +136,7 @@ function scrollLoad(parent, className){
                     oImg.src = pics[i].linkurl;
 
                     oA.appendChild(oImg);
-                    parent.appendChild(oA);
-
+                    aFrag.appendChild(oA);
                 }
             }
         });
