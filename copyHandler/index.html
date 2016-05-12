@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CopyHandler</title>
+</head>
+<body>
+<p id="test" data-author="huydev" data-url="http://lovenotes.me">我是测试数据，复制我试试。</p>
+<script>
+  document.addEventListener('copy', function(e){
+
+    if(!window.getSelection){
+      return;
+    }
+
+    var p = document.getElementById('test');
+    var author = p.getAttribute('data-author');
+    var url = p.getAttribute('data-url');
+
+    var m = window.getSelection().toString();   //选择的文本
+
+    if(e.clipboardData){  //高级浏览器
+      e.clipboardData.setData('text/plain', m+ ' ' +joinStr(author, url));
+      e.clipboardData.setData('text/html', joinDom(author, url, m));
+      e.preventDefault();
+      return;
+    }
+    //IE
+    var oDiv = document.createElement('div');
+    oDiv.innerHTML = joinDom(author, url, m);
+    document.body.appendChild(oDiv);
+    oDiv.style.position = 'absolute';
+    oDiv.style.top = 0
+    oDiv.style.left = '-9999px';
+
+    window.getSelection().selectAllChildren(oDiv);
+  });
+  function joinStr(author, url){
+    return '作者：'+ author + ' 链接：'+ url;
+  }
+  function joinDom(author, url, text){
+    return '<p>'+ text +'</p><div>'+ joinStr(author, url) +'</div>';
+  }
+</script>
+</body>
+</html>
